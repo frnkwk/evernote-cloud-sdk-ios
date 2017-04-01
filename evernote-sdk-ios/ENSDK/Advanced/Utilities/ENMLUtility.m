@@ -236,7 +236,12 @@ typedef void (^ENMLHTMLCompletionBlock)(NSString* html, NSError *error);
     }
     [fileManager createDirectoryAtPath:contentsPath withIntermediateDirectories:NO attributes:nil error:&error];
     
-    NSString* path = [NSString stringWithFormat:@"%@/%@",contentsPath,resource.attributes.fileName];
+    NSDateFormatter *dateformatter =[[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"yyyyMMddHHmmss"];
+    
+    NSString *uniqueString = [dateformatter stringFromDate:[NSDate date]];
+    
+    NSString* path = [NSString stringWithFormat:@"%@/%@.pdf",contentsPath,uniqueString];
     
     [resource.data.body writeToFile:path atomically:NO];
     
