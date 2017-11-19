@@ -81,6 +81,11 @@
         
     self.navigationItem.rightBarButtonItem = cancelItem;
     
+    
+    
+    UIBarButtonItem *googleItem = [[UIBarButtonItem alloc]initWithTitle:ENSDKLocalizedString(@"Using Google Sign-in?", @"") style:UIBarButtonItemStylePlain target:self action:@selector(showAlertForGoogleSignin)];
+    self.navigationItem.leftBarButtonItem = googleItem;
+    
     // adding an activity indicator
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.activityIndicator setHidesWhenStopped:YES];
@@ -106,6 +111,17 @@
         [self.delegate oauthViewControllerDidCancel:self];
     }
     self.delegate = nil;
+}
+
+- (void)showAlertForGoogleSignin {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:ENSDKLocalizedString(@"If you create an Evernote account using Google Sign-in, you’ll need to set up an Evernote password by requesting a password reset.", @"") preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *requestAction = [UIAlertAction actionWithTitle:ENSDKLocalizedString(@"Request a password reset", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"https://www.evernote.com/ForgotPassword.action"]];
+    }];
+    [alert addAction:requestAction];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:ENSDKLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:true completion:nil];
 }
 
 - (void)switchProfile:(id)sender

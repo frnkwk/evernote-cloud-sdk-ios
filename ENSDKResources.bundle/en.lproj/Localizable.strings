@@ -29,3 +29,19 @@
 "Evernote-International" = "Evernote-International";
 
 "Evernote-China" = "Evernote-China";
+
+"If you create an Evernote account using Google Sign-in, you’ll need to set up an Evernote password by requesting a password reset." = "If you create an Evernote account using Google Sign-in, you’ll need to set up an Evernote password by requesting a password reset.";
+
+"Request a password reset" = "Request a password reset";
+
+"Cancel" = "Cancel";
+
+"Using Google Sign-in?" = "Using Google Sign-in?";
+
+"Sign In To Evernote" = "Sign In To Evernote";
+
+"Choose sign in method" = "Choose sign in method";
+
+"Sign in with Evernote app" = "Sign in with Evernote app";
+
+"Enter email address or username" = "Enter email address or username";

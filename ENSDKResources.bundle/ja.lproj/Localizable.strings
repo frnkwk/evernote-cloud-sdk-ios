@@ -29,3 +29,19 @@
 "Evernote-International" = "Evernote-国際";
 
 "Evernote-China" = "Evernote-中国";
+
+"If you create an Evernote account using Google Sign-in, you’ll need to set up an Evernote password by requesting a password reset." = "GoogleログインでEvernoteアカウントを新規作成した場合、パスワードの再設定をリクエストしてEvernoteのパスワードを設定する必要があります。";
+
+"Request a password reset" = "パスワードの再設定";
+
+"Cancel" = "キャンセル";
+
+"Using Google Sign-in?" = "Googleログイン";
+
+"Sign In To Evernote" = "Evernoteにログイン";
+
+"Choose sign in method" = "ログイン方法を選択してください";
+
+"Sign in with Evernote app" = "Evernoteアプリでログイン";
+
+"Enter email address or username" = "メールアドレスまたはユーザー名を入力";

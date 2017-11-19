@@ -410,15 +410,26 @@ NSString * ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked = @"ENOAuthAuthentica
         if ([device respondsToSelector:@selector(isMultitaskingSupported)] &&
             [device isMultitaskingSupported] &&
             self.isMultitaskLoginDisabled==NO) {
-            self.state = ENOAuthAuthenticatorStateInProgress;
-            NSString* openURL = [NSString stringWithFormat:@"en://link-sdk/consumerKey/%@/profileName/%@/authorization/%@",self.consumerKey,self.currentProfile,parameters[@"oauth_token"]];
-            BOOL success = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:openURL]];
-            if(success == NO) {
-                // The Evernote app does not support the full URL, falling back
-                self.isMultitaskLoginDisabled = YES;
-                // Restart oAuth dance
-                [self startOauthAuthentication];
-            }
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:ENSDKLocalizedString(@"Sign In To Evernote", @"") message:ENSDKLocalizedString(@"Choose sign in method", @"") preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* appLoginAction = [UIAlertAction actionWithTitle:ENSDKLocalizedString(@"Sign in with Evernote app", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                self.state = ENOAuthAuthenticatorStateInProgress;
+                NSString* openURL = [NSString stringWithFormat:@"en://link-sdk/consumerKey/%@/profileName/%@/authorization/%@",self.consumerKey,self.currentProfile,parameters[@"oauth_token"]];
+                BOOL success = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:openURL]];
+                if(success == NO) {
+                    // The Evernote app does not support the full URL, falling back
+                    self.isMultitaskLoginDisabled = YES;
+                    // Restart oAuth dance
+                    [self startOauthAuthentication];
+                }
+            }];
+            [alert addAction:appLoginAction];
+            UIAlertAction* webLoginAction = [UIAlertAction actionWithTitle:ENSDKLocalizedString(@"Enter email address or username", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSString *userAuthURLString = [self userAuthorizationURLStringWithParameters:parameters];
+                NSURL *userAuthURL = [NSURL URLWithString:userAuthURLString];
+                [self openOAuthViewControllerWithURL:userAuthURL];
+            }];
+            [alert addAction:webLoginAction];
+            [self.authenticationViewController presentViewController:alert animated:true completion:nil];
         }
         else {
             // Open a modal ENOAuthViewController on top of our given view controller,
