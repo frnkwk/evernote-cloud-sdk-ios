@@ -36,6 +36,7 @@
 #import "ENGCOAuth.h"
 #import "NSString+URLEncoding.h"
 #import "ENSDKLogging.h"
+#import <SafariServices/SafariServices.h>
 
 #import "NSRegularExpression+ENAGRegex.h"
 
@@ -79,6 +80,8 @@ NSString * ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked = @"ENOAuthAuthentica
 
 @property (nonatomic, strong) NSMutableData * receivedData;
 @property (nonatomic, strong) NSURLResponse * response;
+
+@property (nonatomic, strong) SFAuthenticationSession* authSession;
 @end
 
 @implementation ENOAuthAuthenticator
@@ -477,29 +480,14 @@ NSString * ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked = @"ENOAuthAuthentica
 
 - (void)openOAuthViewControllerWithURL:(NSURL *)authorizationURL
 {
-    BOOL isSwitchAllowed = NO;
-    if([self.profiles count]>1) {
-        isSwitchAllowed = YES;
-    }
-    else {
-        isSwitchAllowed = NO;
-    }
-    if(!self.isSwitchingInProgress ) {
-        self.oauthViewController = [[ENOAuthViewController alloc] initWithAuthorizationURL:authorizationURL
-                                                                       oauthCallbackPrefix:[self oauthCallback]
-                                                                               profileName:self.currentProfile
-                                                                            allowSwitching:isSwitchAllowed
-                                                                                  delegate:self];
-
-        // Replace the loading view with the OAuth view. Don't animate the transition, and don't leave the loading
-        // view on the view stack.
-        [self.authenticationViewController setViewControllers:@[self.oauthViewController] animated:NO];
-    }
-    else {
-        [self.oauthViewController updateUIForNewProfile:self.currentProfile withAuthorizationURL:authorizationURL];
-        self.isSwitchingInProgress = NO;
-        
-    }
+    self.authSession = [[SFAuthenticationSession alloc]initWithURL:authorizationURL callbackURLScheme:[self oauthCallback] completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+        if (error != nil) {
+            [self completeAuthenticationWithError:error];
+        } else {
+            [self getOAuthTokenForURL:callbackURL];
+        }
+    }];
+    [self.authSession start];
 }
 
 - (void)completeAuthenticationWithCredentials:(ENCredentials *)credentials usesLinkedAppNotebook:(BOOL)linkedAppNotebook
