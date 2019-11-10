@@ -228,7 +228,7 @@
 				TargetAttributes = {
 					030DA2EF1E27BCF700FD4BDB = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = Q79WDW8YH9;
+						DevelopmentTeam = HCG8Z4Q9YN;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -238,6 +238,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -421,7 +422,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = Q79WDW8YH9;
+				DEVELOPMENT_TEAM = HCG8Z4Q9YN;
 				INFOPLIST_FILE = EvernoteSDKSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.evernote.EvernoteSDKSample;
@@ -433,7 +434,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = Q79WDW8YH9;
+				DEVELOPMENT_TEAM = HCG8Z4Q9YN;
 				INFOPLIST_FILE = EvernoteSDKSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.evernote.EvernoteSDKSample;
