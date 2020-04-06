@@ -29,7 +29,6 @@
 #import "ENOAuthAuthenticator.h"
 #import "ENUserStoreClient.h"
 #import "ENLoadingViewController.h"
-#import "ENOAuthViewController.h"
 #import "ENCredentials.h"
 #import "ENCredentialStore.h"
 #import "ENSDKPrivate.h"
@@ -55,14 +54,13 @@ typedef NS_ENUM(NSInteger, ENOAuthAuthenticatorState) {
 
 NSString * ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked = @"ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked";
 
-@interface ENOAuthAuthenticator () <ENOAuthViewControllerDelegate, ENLoadingViewControllerDelegate>
+@interface ENOAuthAuthenticator () <ENLoadingViewControllerDelegate>
 @property (nonatomic, assign) BOOL inProgress;
 
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (nonatomic, strong) UIViewController * hostViewController;
 @property (nonatomic, strong) UINavigationController * authenticationViewController;
-@property (nonatomic, strong) ENOAuthViewController * oauthViewController;
 
 @property (nonatomic, assign) ENOAuthAuthenticatorState state;
 
@@ -606,24 +604,6 @@ NSString * ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked = @"ENOAuthAuthentica
     return dict;
 }
 
-#pragma mark - ENOAuthViewControllerDelegate
-
-- (void)oauthViewControllerDidCancel:(ENOAuthViewController *)sender
-{
-    NSError* error = [NSError errorWithDomain:ENErrorDomain code:ENErrorCodeCancelled userInfo:nil];
-    [self completeAuthenticationWithError:error];
-}
-
-- (void)oauthViewControllerDidSwitchProfile:(ENOAuthViewController *)sender {
-    self.isSwitchingInProgress = YES;
-    [self switchProfile];
-}
-
-- (void)oauthViewController:(ENOAuthViewController *)sender didFailWithError:(NSError *)error
-{
-    [self completeAuthenticationWithError:error];
-}
-
 - (BOOL)handleOpenURL:(NSURL *)url {
     if([[url host] isEqualToString:@"invalidURL"]) {
         NSLog(@"Invalid URL sent to Evernote!");
@@ -683,11 +663,6 @@ NSString * ENOAuthAuthenticatorAuthInfoAppNotebookIsLinked = @"ENOAuthAuthentica
         return;
     }
     [self getOAuthTokenForURL:callbackURL];
-}
-
-- (void)oauthViewController:(ENOAuthViewController *)sender receivedOAuthCallbackURL:(NSURL *)url
-{
-    [self getOAuthTokenForURL:url];
 }
 
 - (void)getOAuthTokenForURL:(NSURL*)url {

@@ -32,6 +32,5 @@
 
 @interface ENWebClipNoteBuilder : NSObject
 - (id)initWithUrl:(NSURL *)url;
-- (id)initWithWebView:(UIWebView *)webView;
 - (void)buildNote:(void(^)(ENNote *))completion;
 @end

@@ -36,7 +36,6 @@
 
 @interface ENWebClipNoteBuilder()
 
-@property (strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) NSURL *url;
 
 @property (copy, nonatomic) void (^completion)(ENNote *);
@@ -54,34 +53,9 @@
     return self;
 }
 
-- (id)initWithWebView:(UIWebView *)webView
-{
-    self = [super init];
-    if (self) {
-        self.webView = webView;
-    }
-    return self;
-}
-
 - (void)buildNote:(void (^)(ENNote *))completion {
   self.completion = completion;
-  UIWebView *webView = self.webView;
   NSURL *url = self.url;
-  
-  if (webView != nil) {
-    if (url == nil) {
-      url = webView.request.URL;
-      self.url = url;
-    }
-
-    NSString *docType = [webView stringByEvaluatingJavaScriptFromString:@"document.doctype.name"];
-    if ([docType isEqualToString:@"html"] == YES) {
-      BOOL success = [self clipContentsOfWebView:webView];
-      if (success == YES) {
-        return;
-      }
-    }
-  }
   
   if (url != nil) {
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url]
@@ -147,54 +121,6 @@
   else {
     self.completion(note);
   }
-}
-
-- (BOOL) clipContentsOfWebView:(UIWebView *)webView {
-  NSString *documentTitle = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-  
-  NSArray *jsSelectAllLines = @[@"(function() {",
-                                @"var selection = window.getSelection();",
-                                @"var range = document.createRange();",
-                                @"range.selectNodeContents(document.body);",
-                                @"selection.removeAllRanges();",
-                                @"selection.addRange(range);",
-                                @"return JSON.stringify(selection !== null);",
-                                @"})();"];
-  
-  NSString *jsSelectAllCode = [jsSelectAllLines componentsJoinedByString:@"\n"];
-  NSString *selectAllResult = [webView stringByEvaluatingJavaScriptFromString:jsSelectAllCode];
-  if ([selectAllResult boolValue] == YES) {
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    NSArray *oldPasteboardContents = [[pasteboard items] copy];
-    
-    [webView copy:self];
-    ENWebArchive * webArchive = nil;
-    NSData * webArchiveData = [pasteboard dataForPasteboardType:ENWebArchivePboardType];
-    if (webArchiveData) {
-        webArchive = [ENWebArchive webArchiveWithData:webArchiveData];
-    }
-    pasteboard.items = oldPasteboardContents;
-    
-    if (webArchive != nil) {
-      [self createNoteFromContents:webArchive
-                             title:documentTitle
-                          mimeType:nil
-                         sourceURL:self.url];
-      return YES;
-    }
-  }
-  
-  // If we made it here, we failed to get a WebArchive...
-  NSString *documentSource = [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.innerHTML"];
-  if (documentSource != nil && [documentSource length] > 0) {
-    [self createNoteFromContents:documentSource
-                           title:documentTitle
-                        mimeType:nil
-                       sourceURL:self.url];
-    return YES;
-  }
-  
-  return NO;
 }
 
 - (void) createNoteFromContents:(id)contents
