@@ -19,7 +19,7 @@ BOOL IsIOS8() {
 }
 
 BOOL IsEvernoteInstalled() {
-    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"en://"]];
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"evernote://"]];
 }
 
 @end
